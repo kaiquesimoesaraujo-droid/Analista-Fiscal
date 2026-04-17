@@ -1,8 +1,0 @@
----
-const { type = "conceito", title } = Astro.props as { type?: "conceito" | "atencao" | "exemplo" | "base-legal"; title: string };
----
-
-<aside class={`callout ${type}`}>
-  <strong>{title}</strong>
-  <slot />
-</aside>
