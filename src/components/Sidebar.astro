@@ -2,7 +2,9 @@
 import { modules } from "@data/modules";
 import { primaryPages } from "@data/site";
 
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.endsWith("/") 
+  ? import.meta.env.BASE_URL 
+  : `${import.meta.env.BASE_URL}/`;
 const currentPath = Astro.url.pathname.replace(base, "/");
 const isActive = (href: string) => currentPath === href || (href !== "/" && currentPath.startsWith(href));
 ---
