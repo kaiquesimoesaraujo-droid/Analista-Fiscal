@@ -1,0 +1,61 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="search-wrap" data-search>
+  <label class="sr-only" for="global-search">Buscar no portal</label>
+  <input class="search-input" id="global-search" type="search" placeholder="Buscar por IRRF, CST, split payment..." autocomplete="off" />
+  <div class="search-results" id="search-results" role="listbox" aria-label="Resultados da busca"></div>
+</div>
+
+<script define:vars={{ base }}>
+  const root = document.querySelector("[data-search]");
+  const input = root?.querySelector("input");
+  const results = root?.querySelector(".search-results");
+  let index = [];
+
+  const normalize = (value) =>
+    value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "");
+
+  async function loadIndex() {
+    if (index.length) return index;
+    const response = await fetch(`${base}search-index.json`);
+    index = await response.json();
+    return index;
+  }
+
+  function render(items) {
+    if (!results) return;
+    results.innerHTML = "";
+    if (!items.length) {
+      results.innerHTML = '<div class="search-result">Nenhum resultado encontrado<span>Tente uma sigla, tributo ou obrigação acessória.</span></div>';
+    } else {
+      for (const item of items.slice(0, 8)) {
+        const link = document.createElement("a");
+        link.className = "search-result";
+        link.href = `${base}${item.href}`;
+        link.innerHTML = `${item.title}<span>${item.type} · ${item.summary}</span>`;
+        results.appendChild(link);
+      }
+    }
+    results.dataset.open = "true";
+  }
+
+  input?.addEventListener("input", async (event) => {
+    const query = normalize(event.currentTarget.value.trim());
+    if (!query || query.length < 2) {
+      if (results) results.dataset.open = "false";
+      return;
+    }
+    const data = await loadIndex();
+    const matches = data.filter((item) => normalize(`${item.title} ${item.summary} ${item.keywords}`).includes(query));
+    render(matches);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!root?.contains(event.target) && results) results.dataset.open = "false";
+  });
+</script>

@@ -1,0 +1,120 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Callout from "@components/Callout.astro";
+import Quiz from "@components/Quiz.astro";
+import { modules } from "@data/modules";
+import { legalById } from "@data/legal";
+import type { TrainingModule } from "@data/moduleTypes";
+
+export function getStaticPaths() {
+  return modules.map((module) => ({
+    params: { slug: module.slug },
+    props: { module }
+  }));
+}
+
+const { module } = Astro.props as { module: TrainingModule };
+---
+
+<BaseLayout title={module.title} description={module.summary}>
+  <div class="container">
+    <Breadcrumbs items={[{ title: "Trilha", href: "/modulos/" }, { title: module.title }]} />
+    <header class="page-header">
+      <p class="page-kicker">Módulo {module.order} · {module.level} · {module.estimatedTime}</p>
+      <h1>{module.title}</h1>
+      <p>{module.summary}</p>
+      <div class="pill-row">
+        <span class="pill">Última revisão: {module.lastReviewed}</span>
+        {module.transitional && <span class="pill alert">Regra transitória ou atualização frequente</span>}
+      </div>
+    </header>
+
+    <section class="section">
+      <img src={module.heroImage} alt={module.imageAlt} style="border-radius:8px; aspect-ratio: 21 / 8; object-fit: cover; width: 100%;" />
+    </section>
+
+    <section class="content-section">
+      <h2>Objetivos de aprendizagem</h2>
+      <ul>
+        {module.learningGoals.map((goal) => <li>{goal}</li>)}
+      </ul>
+    </section>
+
+    <section class="content-section">
+      <h2>Submódulos e tópicos</h2>
+      <div class="grid two">
+        {module.submodules.map((submodule) => (
+          <article class="card">
+            <h3>{submodule.title}</h3>
+            <ul>
+              {submodule.topics.map((topic) => <li>{topic}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {module.sections.map((section) => (
+      <Callout type={section.type ?? "conceito"} title={section.title}>
+        {section.body.map((paragraph) => <p set:html={paragraph}></p>)}
+      </Callout>
+    ))}
+
+    <section class="content-section">
+      <h2>Exemplos práticos</h2>
+      <div class="example-list">
+        {module.examples.map((example) => (
+          <article class="example">
+            <h3>{example.title}</h3>
+            <p><strong>Cenário:</strong> {example.scenario}</p>
+            <ol>
+              {example.steps.map((step) => <li>{step}</li>)}
+            </ol>
+            <p><strong>Base:</strong> {example.legalBasis}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="content-section">
+      <h2>Erros comuns</h2>
+      <ul class="mistakes">
+        {module.commonMistakes.map((mistake) => <li>{mistake}</li>)}
+      </ul>
+    </section>
+
+    <section class="content-section">
+      <h2>Checklist operacional</h2>
+      <ul class="checklist">
+        {module.checklist.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <Quiz quiz={module.quiz} slug={module.slug} />
+
+    <section class="content-section">
+      <h2>Referências oficiais</h2>
+      <div class="reference-grid">
+        {module.references.map((id) => {
+          const reference = legalById[id];
+          return (
+            <article class="card">
+              <span class="pill">{reference.source}</span>
+              <h3><a href={reference.url}>{reference.title}</a></h3>
+              <p>{reference.status}</p>
+              <p>{reference.note}</p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="content-section">
+      <h2>Pontos de validação humana</h2>
+      <ul>
+        {module.validationNotes.map((note) => <li>{note}</li>)}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
