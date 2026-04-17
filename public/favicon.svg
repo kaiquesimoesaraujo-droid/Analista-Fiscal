@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Portal Tributário Brasil">
+  <rect width="64" height="64" rx="8" fill="#087b5f"/>
+  <path d="M15 17h34v7H15zM15 29h21v7H15zM15 41h29v7H15z" fill="#fff"/>
+  <path d="M43 27l8 7-8 7-4-4 4-3-4-3z" fill="#f2bc57"/>
+</svg>

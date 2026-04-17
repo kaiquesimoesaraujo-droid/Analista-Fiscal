@@ -1,0 +1,20 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ModuleCard from "@components/ModuleCard.astro";
+import { modules } from "@data/modules";
+---
+
+<BaseLayout title="Trilha de aprendizagem" description="Módulos de treinamento fiscal e tributário por etapa.">
+  <div class="container">
+    <Breadcrumbs items={[{ title: "Trilha" }]} />
+    <header class="page-header">
+      <p class="page-kicker">Módulos</p>
+      <h1>Trilha de aprendizagem fiscal</h1>
+      <p>Sequência sugerida para construir base, executar retenções, conferir documentos, escriturar e acompanhar a Reforma Tributária.</p>
+    </header>
+    <div class="grid modules">
+      {modules.map((module) => <ModuleCard module={module} />)}
+    </div>
+  </div>
+</BaseLayout>

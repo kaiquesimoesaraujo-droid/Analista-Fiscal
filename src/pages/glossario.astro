@@ -1,0 +1,27 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { glossary } from "@data/glossary";
+---
+
+<BaseLayout title="Glossário fiscal">
+  <div class="container">
+    <Breadcrumbs items={[{ title: "Glossário" }]} />
+    <header class="page-header">
+      <p class="page-kicker">Siglas e conceitos</p>
+      <h1>Glossário fiscal</h1>
+      <p>Definições rápidas para apoiar leitura de notas, normas, obrigações acessórias e módulos da trilha.</p>
+    </header>
+    <div class="reference-grid">
+      {glossary.map((item) => (
+        <article class="card">
+          <h3 id={item.term.toLowerCase().replaceAll(" ", "-")}>{item.term}</h3>
+          <p>{item.definition}</p>
+          <div class="pill-row">
+            {item.related.map((related) => <span class="pill">{related}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

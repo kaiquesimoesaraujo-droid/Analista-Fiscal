@@ -1,0 +1,34 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { legalCategories, legalRefs } from "@data/legal";
+---
+
+<BaseLayout title="Biblioteca legal">
+  <div class="container">
+    <Breadcrumbs items={[{ title: "Biblioteca legal" }]} />
+    <header class="page-header">
+      <p class="page-kicker">Fontes oficiais</p>
+      <h1>Biblioteca legal</h1>
+      <p>Referências oficiais agrupadas por tema, com status de vigência, alerta operacional e link direto para a fonte.</p>
+    </header>
+    {legalCategories.map((category) => (
+      <section class="content-section">
+        <h2>{category}</h2>
+        <div class="reference-grid">
+          {legalRefs.filter((reference) => reference.category === category).map((reference) => (
+            <article class="card">
+              <span class="pill">{reference.source}</span>
+              <h3><a href={reference.url}>{reference.title}</a></h3>
+              <p><strong>Status:</strong> {reference.status}</p>
+              <p>{reference.note}</p>
+              <div class="pill-row">
+                {reference.topics.slice(0, 5).map((topic) => <span class="pill">{topic}</span>)}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
