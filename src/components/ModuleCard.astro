@@ -2,7 +2,9 @@
 import type { TrainingModule } from "@data/modules";
 
 const { module } = Astro.props as { module: TrainingModule };
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.endsWith("/") 
+  ? import.meta.env.BASE_URL 
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
 <a class="module-card" href={`${base}modulos/${module.slug}/`}>
